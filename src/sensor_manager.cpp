@@ -1,4 +1,5 @@
 #include "dyros_bolt_sensor/sensor_manager.h"
+#include <iostream>
 #include <thread>
 #include <chrono>
 #include <signal.h>
@@ -7,7 +8,7 @@ volatile bool *prog_shutdown;
 
 void SIGINT_handler(int sig)
 {
-    // std::cout << " SENSOR : shutdown Signal" << std::endl;
+    std::cout << " SENSOR : shutdown Signal" << std::endl;
     *prog_shutdown = true;
 }
 
@@ -156,19 +157,21 @@ int main(int argc, char **argv)
 
     /* Initialize pthread attributes (default values) */
 
-    if (pthread_attr_init(&attr))
-    {
-        printf("attr init failed ");
-    }
+//rui - RTOS
+    // if (pthread_attr_init(&attr))
+    // {
+    //     printf("attr init failed ");
+    // }
 
-    if (pthread_attr_setschedpolicy(&attr, SCHED_FIFO))
-    {
-        printf("attr setschedpolicy failed ");
-    }
-    if (pthread_attr_setschedparam(&attr, &param))
-    {
-        printf("attr setschedparam failed ");
-    }
+    // if (pthread_attr_setschedpolicy(&attr, SCHED_FIFO))
+    // {
+    //     printf("attr setschedpolicy failed ");
+    // }
+    // if (pthread_attr_setschedparam(&attr, &param))
+    // {
+    //     printf("attr setschedparam failed ");
+    // }
+//rui - RTOS
 
     // CPU_ZERO(&cpusets[i]);
     // CPU_SET(5 - i, &cpusets[i]);
@@ -177,12 +180,19 @@ int main(int argc, char **argv)
     //     printf("attr %d setaffinity failed ", i);
     // }
 
-    if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED))
-    {
-        printf("attr setinheritsched failed ");
-    }
+//rui - RTOS2
+    // if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED))
+    // {
+    //     printf("attr setinheritsched failed ");
+    // }
 
-    if (pthread_create(&thread, &attr, &SensorManager::SensorThread_starter, &sm_))
+    // if (pthread_create(&thread, &attr, &SensorManager::SensorThread_starter, &sm_))
+    // {
+    //     printf("threads[0] create failed\n");
+    // }
+//rui - RTOS2
+
+    if (pthread_create(&thread, NULL, &SensorManager::SensorThread_starter, &sm_))
     {
         printf("threads[0] create failed\n");
     }

@@ -42,44 +42,49 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_ros
 )
-FIND_PACKAGE(Boost COMPONENTS system thread filesystem REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system thread)
 
 
 catkin_package(
-#  INCLUDE_DIRS include
+ INCLUDE_DIRS include
 #  LIBRARIES dyros_bolt_sensor
 #  CATKIN_DEPENDS eigen_conversions roscpp sensor_msgs tf2 tf2_ros
 #  DEPENDS system_lib
+DEPENDS Boost
 )
 
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-  /usr/share/c++-mscl/source
-  /usr/share/c++-mscl/Boost/include
-)
+if(Boost_FOUND)
+  message(" Boost Found ")
 
-link_directories(
-      /usr/share/c++-mscl
-)
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    /usr/share/c++-mscl/source
+    # /usr/share/c++-mscl/Boost/include
+    ${Boost_INCLUDE_DIRS}
+  )
 
-add_library(mx5_lib
-  src/mx5_imu.cpp  
-)
+  link_directories(
+        /usr/share/c++-mscl
+  )
 
-add_executable(${PROJECT_NAME} src/sensor_manager.cpp)
+  add_library(mx5_lib
+    src/mx5_imu.cpp  
+  )
 
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-  mx5_lib
-  -lmscl 
-  ${Boost_LIBRARIES} 
-  /usr/share/c++-mscl/Boost/lib/libboost_system.so.1.68.0
+  add_executable(${PROJECT_NAME} src/sensor_manager.cpp)
 
-)
+  target_link_libraries(${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    mx5_lib
+    -lmscl 
+    # /usr/share/c++-mscl/Boost/lib/libboost_system.so.1.68.0
+    ${Boost_LIBRARIES} 
 
-add_dependencies(mx5_lib ${catkin_EXPORTED_TARGETS})
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+  )
 
+  add_dependencies(mx5_lib ${catkin_EXPORTED_TARGETS})
+  add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+endif()
 
 endif()
