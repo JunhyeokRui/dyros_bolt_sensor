@@ -112,6 +112,7 @@ void *SensorManager::SensorThread(void)
                 shm_->imu_acc[1] = imu_msg.linear_acceleration.y;
                 shm_->imu_acc[2] = imu_msg.linear_acceleration.z;
                 // std::cout<<shm_->pos_virtual[3]<<shm_->pos_virtual[4]<<shm_->pos_virtual[5]<<shm_->pos_virtual[6]<<std::endl;
+                
 
                 imu_pub.publish(imu_msg);
                 shm_->imuWriting = false;
