@@ -17,7 +17,7 @@ public:
 
     // void *FTThread(void);
     // static void *FTthread_starter(void *context) { return ((SensorManager *)context)->FTThread(); }
-
+    // odrive::ODriveSocketCan odrv;    
     SHMmsgs *shm_;
     ros::NodeHandle nh_;
 
@@ -31,6 +31,8 @@ public:
     bool imu_reset_signal_ = false;
     bool ft_calib_signal_ = false;
     bool handft_calib_signal_ = false;
+    bool encoder_reset_signal_ = false;
+    bool encoder_calib_signal_ = false;
 
     std::fstream ft_init_log;
 

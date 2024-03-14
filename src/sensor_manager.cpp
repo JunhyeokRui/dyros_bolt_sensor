@@ -34,6 +34,14 @@ void SensorManager::GuiCommandCallback(const std_msgs::StringConstPtr &msg)
     {
         // pos
     }
+    else if (msg->data == "encoderreset")
+    {
+        encoder_reset_signal_ = true;
+    }
+    else if (msg->data == "encodercalib")
+    {
+        encoder_calib_signal_ = true;
+    }
 }
 
 void *SensorManager::SensorThread(void)
@@ -85,6 +93,24 @@ void *SensorManager::SensorThread(void)
                 mx5.resetEFIMU();
                 imu_reset_signal_ = false;
             }
+
+            // if (encoder_reset_signal_)
+            // {
+            //     for (int i = 0; i < odrv.axis_can_ids_list.size(); i++) {
+            //         odrv.resetEncoder(i, odrive::ODriveCommandId::SET_ABSOLUTE_POSITION);
+            //     }
+            //     encoder_reset_signal_ = false;
+            //     shm_->encoderResetSwitch = false;
+            // }
+
+            // if (encoder_calib_signal_)
+            // {
+            //     for (int i = 0; i < odrv.axis_can_ids_list.size(); i++) {
+            //         odrv.setAxisRequestedState(odrv.axis_can_ids_list[i], odrive::ODriveAxisState::ENCODER_OFFSET_CALIBRATION);
+            //     }
+            //     encoder_calib_signal_ = false;
+            //     shm_->encoderCalibSwitch = false;
+            // }
 
             int imu_state__;
             imu_msg = mx5.getIMU(imu_state__);
