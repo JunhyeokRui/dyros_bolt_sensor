@@ -137,7 +137,9 @@ void *SensorManager::SensorThread(void)
                 shm_->imu_acc[0] = imu_msg.linear_acceleration.x;
                 shm_->imu_acc[1] = imu_msg.linear_acceleration.y;
                 shm_->imu_acc[2] = imu_msg.linear_acceleration.z;
-                // std::cout<<shm_->pos_virtual[3]<<shm_->pos_virtual[4]<<shm_->pos_virtual[5]<<shm_->pos_virtual[6]<<std::endl;
+
+                std::cout << "pos_virtual3~6 : " <<shm_->pos_virtual[3] << " : " <<shm_->pos_virtual[4]<< " : " <<shm_->pos_virtual[5]<< " : " <<shm_->pos_virtual[6]<<std::endl;
+                std::cout << "vel_virtual3~5 : " <<shm_->vel_virtual[3] << " : " <<shm_->vel_virtual[4]<< " : " <<shm_->vel_virtual[5]<<std::endl;
                 
 
                 imu_pub.publish(imu_msg);
@@ -170,7 +172,9 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "sensor_manager", ros::init_options::NoSigintHandler);
     SensorManager sm_;
     int shm_id_;
+
     init_shm(shm_msg_key, shm_id_, &sm_.shm_);
+
     prog_shutdown = &sm_.shm_->shutdown;
 
     struct sched_param param;
@@ -185,19 +189,19 @@ int main(int argc, char **argv)
     /* Initialize pthread attributes (default values) */
 
 //rui - RTOS
-    // if (pthread_attr_init(&attr))
-    // {
-    //     printf("attr init failed ");
-    // }
+    if (pthread_attr_init(&attr))
+    {
+        printf("attr init failed ");
+    }
 
-    // if (pthread_attr_setschedpolicy(&attr, SCHED_FIFO))
-    // {
-    //     printf("attr setschedpolicy failed ");
-    // }
-    // if (pthread_attr_setschedparam(&attr, &param))
-    // {
-    //     printf("attr setschedparam failed ");
-    // }
+    if (pthread_attr_setschedpolicy(&attr, SCHED_FIFO))
+    {
+        printf("attr setschedpolicy failed ");
+    }
+    if (pthread_attr_setschedparam(&attr, &param))
+    {
+        printf("attr setschedparam failed ");
+    }
 //rui - RTOS
 
     // CPU_ZERO(&cpusets[i]);
@@ -208,21 +212,21 @@ int main(int argc, char **argv)
     // }
 
 //rui - RTOS2
-    // if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED))
-    // {
-    //     printf("attr setinheritsched failed ");
-    // }
+    if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED))
+    {
+        printf("attr setinheritsched failed ");
+    }
 
-    // if (pthread_create(&thread, &attr, &SensorManager::SensorThread_starter, &sm_))
-    // {
-    //     printf("threads[0] create failed\n");
-    // }
-//rui - RTOS2
-
-    if (pthread_create(&thread, NULL, &SensorManager::SensorThread_starter, &sm_))
+    if (pthread_create(&thread, &attr, &SensorManager::SensorThread_starter, &sm_))
     {
         printf("threads[0] create failed\n");
     }
+//rui - RTOS2
+
+    // if (pthread_create(&thread, NULL, &SensorManager::SensorThread_starter, &sm_))
+    // {
+    //     printf("threads[0] create failed\n");
+    // }
 
     pthread_join(thread, NULL);
 
